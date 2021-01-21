@@ -147,6 +147,7 @@ class _ExecutionStatus(object):
             return self._my_message()
         if self.parent and self.parent.failed:
             return self._parent_message()
+            self._test.tags.add('robot:skiponsetupfailure')
         return ''
 
     def _my_message(self):
@@ -187,6 +188,7 @@ class TestStatus(_ExecutionStatus):
             msg = self._skip_on_failure_message(failure)
             self.failure.test = msg
             self.skipped = True
+            self._test.tags.add('robot:skiponfailure')
         else:
             self.failure.test = unic(failure)
             self.exit.failure_occurred(failure)
@@ -194,6 +196,7 @@ class TestStatus(_ExecutionStatus):
     def test_skipped(self, reason):
         self.skipped = True
         self.failure.test_skipped = unic(reason)
+        self._test.tags.add('robot:skip')
 
     def skip_if_needed(self):
         if not self.skipped and self.failed and self._skip_on_failure():
